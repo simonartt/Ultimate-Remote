@@ -15,7 +15,11 @@ void CardputerView::initialise() {
     bool fontLoaded = false;
     if (SD.cardType() != CARD_NONE) {
         if (SD.exists("/fonts/main.vlw")) {
-            fontLoaded = Display->loadFont(SD, "/fonts/main.vlw");
+            File fontFile = SD.open("/fonts/main.vlw");
+            if (fontFile) {
+                fontLoaded = Display->loadFont(&fontFile);
+                fontFile.close();
+            }
         }
     }
     // 如果 SD 字体加载失败，回退到内置字体
