@@ -10,7 +10,22 @@ void CardputerView::initialise() {
     Display->setTextColor(TEXT_COLOR);
     Display->fillScreen(BACKGROUND_COLOR);
     M5Cardputer.Display.setTextDatum(middle_center);
-    M5Cardputer.Display.setFont(&fonts::Orbitron_Light_24);
+
+    // 尝试从 SD 卡加载字体 (Noto Sans 中英混合 VLW)
+    bool fontLoaded = false;
+    if (SD.cardType() != CARD_NONE) {
+        if (SD.exists("/fonts/main.vlw")) {
+            File fontFile = SD.open("/fonts/main.vlw");
+            if (fontFile) {
+                fontLoaded = Display->loadFont(fontFile);
+                fontFile.close();
+            }
+        }
+    }
+    // 如果 SD 字体加载失败，回退到内置字体
+    if (!fontLoaded) {
+        Display->setFont(&fonts::efontCN_24);
+    }
 }
 
 void CardputerView::displayTopBar(const std::string& title, bool submenu, bool searchBar) {
@@ -36,7 +51,7 @@ void CardputerView::displayTopBar(const std::string& title, bool submenu, bool s
         Display->setTextColor(TEXT_COLOR);
 
         // Empty search query
-        const std::string searchQuery = title.empty() ? "Type to search" : title.substr(0, limiter);
+        const std::string searchQuery = title.empty() ? translations::UI_TYPE_SEARCH : title.substr(0, limiter);
         
         // To center text
         offsetX = utils::StringUtils::getTextCenterOffset(searchQuery, Display->width(), sizeText);
@@ -83,7 +98,7 @@ void CardputerView::displaySelection(
 
     // for filtering with no results
     if (selectionStrings.empty()) {
-        Display->drawCenterString("No results", Display->width() / 2, Display->height() / 2);
+        Display->drawCenterString(translations::UI_NO_RESULTS.c_str(), Display->width() / 2, Display->height() / 2);
     }
 
     for (size_t i = 0; i < rowsPerScreen && (currentStartRow + i) < selectionStrings.size(); ++i) {
@@ -136,35 +151,35 @@ void CardputerView::displayScanInfo() {
     Display->setTextSize(TEXT_BIG);
     Display->setCursor(40, 18);
     Display->setTextColor(PRIMARY_COLOR);
-    Display->printf("About Scan");
+    Display->printf(translations::UI_SCAN_TITLE.c_str());
 
     // Sub title
     Display->setTextSize(TEXT_MEDIUM);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(16, 42);
-    Display->printf("Scan all remotes for a brand");
+    Display->printf(translations::UI_SCAN_DESC.c_str());
     Display->setTextSize(TEXT_TINY);
     Display->setCursor(15, 59);
 
     // Text
-    Display->printf("When a remote reacts to your device");
+    Display->printf(translations::UI_SCAN_TEXT1.c_str());
     Display->setTextColor(PRIMARY_COLOR);
     Display->setCursor(15, 72);
-    Display->printf(" press space ");
+    Display->printf(translations::UI_SCAN_TEXT2.c_str());
     Display->setCursor(94, 72);
     Display->setTextColor(TEXT_COLOR);
-    Display->printf("to add to your favorites");
+    Display->printf(translations::UI_ADD_TO_FAV2.c_str());
     Display->setTextSize(TEXT_SMALL);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(18, 90);
-    Display->printf("You will need to select a brand");
+    Display->printf(translations::UI_SCAN_TEXT4.c_str());
 
     // Button OK
     Display->fillRoundRect(70, 105, 100, 20, DEFAULT_ROUND_RECT, PRIMARY_COLOR);
     Display->setTextColor(TEXT_COLOR);
     Display->setTextSize(TEXT_MEDIUM);
     Display->setCursor(80, 115);
-    Display->printf("OK to start");
+    Display->printf(translations::UI_OK_START.c_str());
 }
 
 void CardputerView::displayScanSelection(std::string manufacturerName) {
@@ -189,17 +204,17 @@ void CardputerView::displayIrFileInfo() {
     Display->setTextSize(TEXT_BIG);
     Display->setCursor(50, 22);
     Display->setTextColor(PRIMARY_COLOR);
-    Display->printf("About File");
+    Display->printf(translations::UI_FILE_TITLE.c_str());
 
     // Sub title
     Display->setTextSize(TEXT_SMALL);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(23, 46);
-    Display->printf("You can read .ir files from SD");
+    Display->printf(translations::UI_FILE_DESC.c_str());
 
     // Text
     Display->setCursor(23, 65);
-    Display->printf("Visit GitHub to get these files");
+    Display->printf(translations::UI_FILE_TEXT.c_str());
     Display->setTextColor(PRIMARY_COLOR);
     Display->setCursor(45, 88);
     Display->setTextSize(TEXT_WIDE);
@@ -210,7 +225,7 @@ void CardputerView::displayIrFileInfo() {
     Display->setTextColor(TEXT_COLOR);
     Display->setTextSize(TEXT_MEDIUM);
     Display->setCursor(80, 115);
-    Display->printf("OK to start");
+    Display->printf(translations::UI_OK_START.c_str());
 }
 
 void CardputerView::displayScanRemote(std::string remoteName) {
@@ -222,9 +237,9 @@ void CardputerView::displayScanRemote(std::string remoteName) {
     Display->setTextSize(0.53);
     Display->setTextColor(PRIMARY_COLOR);
     Display->setCursor(7, 126);
-    Display->printf("Press space ");
+    Display->printf(translations::UI_SCAN_PRESS_SPACE.c_str());
     Display->setTextColor(TEXT_COLOR);
-    Display->printf("to add to favorites");
+    Display->printf(translations::UI_ADD_TO_FAV.c_str());
 }
 
 void CardputerView::displayScanCommand(std::string commandName) { 
@@ -245,28 +260,28 @@ void CardputerView::displayScanOver() {
     Display->setTextSize(TEXT_BIG);
     Display->setTextColor(PRIMARY_COLOR);
     Display->setCursor(16, 18);
-    Display->printf("Scan complete");
+    Display->printf(translations::UI_SCAN_COMPLETE.c_str());
 
     // Sub title
     Display->setTextSize(TEXT_MEDIUM);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(20, 42);
-    Display->printf("All remotes have been tried");
+    Display->printf(translations::UI_SCAN_ALL_TRIED.c_str());
     Display->setCursor(40, 59);
-    Display->printf("for the selected brand");
+    Display->printf(translations::UI_SCAN_TEXT3.c_str());
 
     // Text
     Display->setCursor(14, 76);
-    Display->printf("If you haven't found a remote");
+    Display->printf(translations::UI_SCAN_NOT_FOUND.c_str());
     Display->setCursor(11, 92);
     Display->setTextColor(PRIMARY_COLOR);
-    Display->printf("You can try those in favorites");
+    Display->printf(translations::UI_SCAN_TRY_FAV.c_str());
 
     // Button OK
     Display->fillRoundRect(75, 105, 90, 20, DEFAULT_ROUND_RECT, PRIMARY_COLOR);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(85, 115);
-    Display->printf("OK to quit");
+    Display->printf(translations::UI_OK_QUIT.c_str());
 }
 
 void CardputerView::displayStringPrompt(std::string stringDescription, std::string stringInput) {
@@ -292,7 +307,7 @@ void CardputerView::displayStringPrompt(std::string stringDescription, std::stri
     // < button
     Display->drawRoundRect(53, 95, 40, 20, DEFAULT_ROUND_RECT, PRIMARY_COLOR);
     Display->setCursor(70, 103);
-    Display->printf("<");
+    Display->printf(translations::UI_BACK.c_str());
 
     // Button save
     if (stringInput.empty()) {
@@ -302,7 +317,7 @@ void CardputerView::displayStringPrompt(std::string stringDescription, std::stri
     }
     Display->setTextSize(TEXT_MEDIUM);
     Display->setCursor(125, 105);
-    Display->printf("Save");
+    Display->printf(translations::UI_SAVE.c_str());
 }
 
 void CardputerView::displayConfirmationPrompt(std::string stringDescription) {
@@ -322,12 +337,12 @@ void CardputerView::displayConfirmationPrompt(std::string stringDescription) {
     // < button
     Display->drawRoundRect(65, 85, 40, 20, DEFAULT_ROUND_RECT, PRIMARY_COLOR);
     Display->setCursor(82, 94);
-    Display->printf("<");
+    Display->printf(translations::UI_BACK.c_str());
 
     // ok button
     Display->fillRoundRect(128, 85, 40, 20, DEFAULT_ROUND_RECT, PRIMARY_COLOR);
     Display->setCursor(138, 95);
-    Display->printf("OK");
+    Display->printf(translations::UI_OK.c_str());
 }
 
 void CardputerView::displayLoading() {
@@ -341,7 +356,7 @@ void CardputerView::displayLoading() {
     Display->setTextSize(TEXT_WIDE);
     Display->setTextColor(TEXT_COLOR);
     Display->setCursor(77, 80);
-    Display->printf("Loading...");
+    Display->printf(translations::UI_LOADING.c_str());
     Display->setTextSize(TEXT_MEDIUM);
 }
 
@@ -403,7 +418,7 @@ void CardputerView::drawSubMenuReturn(uint8_t x, uint8_t y) {
     Display->setTextSize(TEXT_WIDE);
     Display->setTextColor(PRIMARY_COLOR);
     Display->setCursor(x, y);
-    Display->printf("<");
+    Display->printf(translations::UI_BACK.c_str());
 }
 
 void CardputerView::displayClearMainView(uint8_t offsetY) {

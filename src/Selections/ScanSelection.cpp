@@ -27,7 +27,7 @@ Remote ScanSelection::select(const std::vector<Remote>& remotes,
             while (millis() - startTime < intervalMs) {
                 key = input.handler();
                 if (key == KEY_FAVORITE) {
-                    favoriteName = stringPromptSelection.select("Type a favorite name");
+                    favoriteName = stringPromptSelection.select("输入收藏名称");
                     return remote; // Retourner la remote selectionné
                 }
             }

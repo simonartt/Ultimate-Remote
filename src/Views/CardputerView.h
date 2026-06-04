@@ -5,7 +5,9 @@
 #include <string>
 #include <cstring>
 #include <M5Cardputer.h>
+#include <SD.h>
 #include <Utils/StringUtils.h>
+#include <Translations/Chinese.h>
 
 // SIZING
 #define DEFAULT_MARGIN 5

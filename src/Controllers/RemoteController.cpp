@@ -23,7 +23,7 @@ void RemoteController::handleFileRemoteSelection() {
     sdService.begin();
 
     if (!sdService.getSdState()) {
-        confirmationSelection.select("SD card not found");
+        confirmationSelection.select("未检测到 SD 卡");
         selectionContext.setIsModeSelected(false);
         sdService.close();
         return;
@@ -49,7 +49,7 @@ void RemoteController::handleFileRemoteSelection() {
                 selectionContext.setIsFileRemoteSelected(true);
                 break;
             } else {
-                confirmationSelection.select("Not a valid .ir file");
+                confirmationSelection.select("不是有效的 .ir 文件");
                 selectionContext.setCurrentSelectedFilePath(StringUtils::getParentDirectory(selectionContext.getCurrentSelectedFilePath()));
                 elementNames = getCachedDirectoryElements(selectionContext.getCurrentSelectedFilePath(), sdService);
             }

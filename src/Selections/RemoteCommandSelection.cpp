@@ -72,7 +72,7 @@ RemoteCommand RemoteCommandSelection::select(const std::vector<RemoteCommand>& c
                 // Delete from favorite
                 if (isFavoriteRemote) {
 
-                    bool confirmation = confirmationSelection.select("Delete favorite ?");
+                    bool confirmation = confirmationSelection.select("确认删除收藏？");
 
                     if (confirmation) {
                         currentFavoriteRemotes = deleteFavorite(favName);
@@ -82,7 +82,7 @@ RemoteCommand RemoteCommandSelection::select(const std::vector<RemoteCommand>& c
 
                 // Save to Favorite
                 } else if (!isFavoriteMode) {
-                    std::string favoriteName = stringPromptSelection.select("Type a favorite name");
+                    std::string favoriteName = stringPromptSelection.select("输入收藏名称");
 
                     if (!favoriteName.empty()) {
                         currentFavoriteRemotes = addFavorite(remoteFileName, favoriteName);

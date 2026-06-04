@@ -84,7 +84,7 @@ Product ProductService::getFavoriteRemotesProduct(std::vector<Remote> remotes) {
     favoriteProduct.remoteCount = count;
 
     // Copier le nom du produit
-    strncpy(favoriteProduct.name, "Favorites", sizeof(favoriteProduct.name) - 1);
+    strncpy(favoriteProduct.name, "收藏夹", sizeof(favoriteProduct.name) - 1);
     favoriteProduct.name[sizeof(favoriteProduct.name) - 1] = '\0';
 
     return favoriteProduct;
