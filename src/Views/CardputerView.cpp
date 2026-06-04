@@ -12,7 +12,7 @@ void CardputerView::initialise() {
     M5Cardputer.Display.setTextDatum(middle_center);
 
     // 直接使用 M5GFX 内置中文字体 (efontCN_24)
-    Display->setFont(&fonts::efontCN_24);
+    Display->setFont(&fonts::efontCN_10);
 }
 
 void CardputerView::displayTopBar(const std::string& title, bool submenu, bool searchBar) {
