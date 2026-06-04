@@ -11,21 +11,8 @@ void CardputerView::initialise() {
     Display->fillScreen(BACKGROUND_COLOR);
     M5Cardputer.Display.setTextDatum(middle_center);
 
-    // 尝试从 SD 卡加载字体 (Noto Sans 中英混合 VLW)
-    bool fontLoaded = false;
-    if (SD.cardType() != CARD_NONE) {
-        if (SD.exists("/fonts/main.vlw")) {
-            File fontFile = SD.open("/fonts/main.vlw");
-            if (fontFile) {
-                fontLoaded = Display->loadFont(&fontFile);
-                fontFile.close();
-            }
-        }
-    }
-    // 如果 SD 字体加载失败，回退到内置字体
-    if (!fontLoaded) {
-        Display->setFont(&fonts::efontCN_24);
-    }
+    // 直接使用 M5GFX 内置中文字体 (efontCN_24)
+    Display->setFont(&fonts::efontCN_24);
 }
 
 void CardputerView::displayTopBar(const std::string& title, bool submenu, bool searchBar) {
